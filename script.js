@@ -87,33 +87,42 @@ function capitalize(str) {
 function selectFilter(event) {
   const filter = event.target.dataset.filter;
   console.log(`user selected ${filter}`);
+  //filterList(filter);
   setFilter(filter);
 }
 
 function setFilter(filter) {
-  settings.filter = filter;
+  settings.filterBy = filter;
   buildList();
 }
 
 function filterList(filteredList) {
   //let filteredList = allAnimals;
-  if (settings.filter === "hufflepuff") {
+  if (settings.filterBy === "gryffindor") {
     //filter for cats
-    filteredList = allStudents.filter(isHufflepuff);
-  } else if (settings.filter === "ravenclaw") {
-    filteredList = allStudents.filter(isRavenclaw);
+    filteredList = allStudents.filter(isGry);
+  } else if (settings.filterBy === "slytherin") {
+    filteredList = allStudents.filter(isSly);
+  } else if (settings.filterBy === "hufflepuff") {
+    filteredList = allStudents.filter(isHuf);
+  } else if (settings.filterBy === "ravenclaw") {
+    filteredList = allStudents.filter(isRav);
   }
-
   return filteredList;
 }
 
-function isHufflepuff(student) {
-  return student.house === "hufflepuff";
+function isGry(student) {
+  return student.house === "Gryffindor";
 }
-function isRavenclaw(student) {
-  return student.house === "ravenclaw";
+function isSly(student) {
+  return student.house === "Slytherin";
 }
-
+function isHuf(student) {
+  return student.house === "Hufflepuff";
+}
+function isRav(student) {
+  return student.house === "Ravenclaw";
+}
 function selectSort(event) {
   const sortBy = event.target.dataset.sort;
   const sortDir = event.target.dataset.sortDirection;
