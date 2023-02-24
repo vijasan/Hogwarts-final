@@ -58,7 +58,10 @@ function prepareObject(jsonObject) {
   student.middlename = getMiddleNames(texts);
   student.lastname = texts.pop();
   student.gender = capitalize(jsonObject.gender);
-  student.house = capitalize(jsonObject.house);
+  student.house = jsonObject.house
+    .trim()
+    .toLowerCase()
+    .replace(/^\w/, (c) => c.toUpperCase()); // capitalize the first letter of each word
 
   return student;
 }
