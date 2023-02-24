@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Hogwarts</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>Hogwarts</h1>
+    <p>
+      Filter:
+      <button class="filter" data-action="filter" data-filter="slytherin">
+        Only Slytherin
+      </button>
+      <button class="filter" data-action="filter" data-filter="hufflepuff">
+        Only Hufflepuff
+      </button>
+      <button class="filter" data-action="filter" data-filter="ravenclaw">
+        Only Ravenclaw
+      </button>
+      <button class="filter" data-action="filter" data-filter="gryffindor">
+        Only Gryffindor
+      </button>
+      <button class="filter" data-action="filter" data-filter="*">All</button>
+    </p>
+
+    <hr />
+
+    <table id="list">
+      <thead>
+        <tr id="sorting">
+          <th
+            data-action="sort"
+            data-sort-direction="asc"
+            data-sort="firstname"
+          >
+            First Name
+          </th>
+          <th
+            data-action="sort"
+            data-sort-direction="asc"
+            data-sort="middlename"
+          >
+            Middle Name
+          </th>
+          <th data-action="sort" data-sort-direction="asc" data-sort="lastname">
+            Last Name
+          </th>
+          <th data-action="sort" data-sort-direction="asc" data-sort="gender">
+            Gender
+          </th>
+          <th data-action="sort" data-sort-direction="asc" data-sort="house">
+            House
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- student template will be copied and inserted here -->
+      </tbody>
+    </table>
+
+    <template id="student">
+      <tr>
+        <td data-field="firstname">FIRST NAME</td>
+        <td data-field="middlename">MIDDLE NAME</td>
+        <td data-field="lastname">LAST NAME</td>
+        <td data-field="gender">GENDER</td>
+        <td data-field="house">HOUSE</td>
+      </tr>
+    </template>
+
+    <script src="script.js"></script>
+  </body>
+</html>
