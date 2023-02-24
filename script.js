@@ -46,7 +46,6 @@ async function loadJSON() {
 function prepareObjects(jsonData) {
   allStudents = jsonData.map(prepareObject);
 
-  // TODO: This might not be the function we want to call first
   buildList();
 }
 
@@ -98,15 +97,17 @@ function setFilter(filter) {
 }
 
 function filterList(filteredList) {
-  //let filteredList = allAnimals;
   if (settings.filterBy === "gryffindor") {
-    //filter for cats
+    //filter for Gryffindor
     filteredList = allStudents.filter(isGry);
   } else if (settings.filterBy === "slytherin") {
+    //filter for Slytherin
     filteredList = allStudents.filter(isSly);
   } else if (settings.filterBy === "hufflepuff") {
+    //filter for Hufflepuff
     filteredList = allStudents.filter(isHuf);
   } else if (settings.filterBy === "ravenclaw") {
+    //filter for Ravenclaw
     filteredList = allStudents.filter(isRav);
   }
   return filteredList;
