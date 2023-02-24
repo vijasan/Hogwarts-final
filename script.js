@@ -55,26 +55,25 @@ function prepareObject(jsonObject) {
 
   const texts = jsonObject.fullname.trim().split(" ");
   student.firstname = texts[0];
-  student.middlename = getMiddleName(texts);
+  student.middlename = getMiddleNames(texts);
   student.lastname = texts.pop();
-  student.nickname = getNickname(texts);
   student.gender = capitalize(jsonObject.gender);
   student.house = capitalize(jsonObject.house);
 
   return student;
 }
 
-function getNickname(nameArray) {
-  if (nameArray.length > 1) {
-    return `(${capitalize(nameArray[1])})`;
-  } else {
-    return "";
-  }
-}
-
-function getMiddleName(nameArray) {
+function getMiddleNames(nameArray) {
   if (nameArray.length > 2) {
-    return nameArray[1];
+    let middleNames = "";
+    for (let i = 1; i < nameArray.length - 1; i++) {
+      if (nameArray[i] === "Ernie") {
+        middleNames += `"${capitalize(nameArray[i])}" `;
+      } else {
+        middleNames += capitalize(nameArray[i]) + " ";
+      }
+    }
+    return middleNames.trim();
   } else {
     return "";
   }
@@ -83,7 +82,6 @@ function getMiddleName(nameArray) {
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
-
 function selectFilter(event) {
   const filter = event.target.dataset.filter;
   console.log(`user selected ${filter}`);
