@@ -12,8 +12,14 @@ const Student = {
   lastname: "",
   gender: "",
   house: "",
+  Expel: false,
 };
-const settings = { filter: "all", sortBy: "firstname", sortDir: "asc" };
+const settings = {
+  filter: "all",
+  sortBy: "firstname",
+  sortDir: "asc",
+  searchQuery: "",
+};
 
 function start() {
   console.log("ready");

@@ -9,6 +9,8 @@
   </head>
   <body>
     <h1>Hogwarts</h1>
+    <input type="text" id="searchInput" placeholder="Search for students..." />
+    <button id="searchButton">Search</button>
     <p>
       Filter:
       <button class="filter" data-action="filter" data-filter="slytherin">
@@ -60,6 +62,25 @@
         <!-- student template will be copied and inserted here -->
       </tbody>
     </table>
+
+    <!-- popup window for student details -->
+    <div id="popup">
+      <div class="popup-container">
+        <span class="close" id="closeBtn">&times;</span>
+        <div class="popup-content">
+          <div class="student-info">
+            <h2 id="popupName"></h2>
+            <p id="popupNickname"></p>
+            <p id="popupBloodStatus"></p>
+            <p id="popupHouse"></p>
+            <p id="popupStatus"></p>
+          </div>
+          <div class="student-photo">
+            <img id="popupPhoto" src="" alt="Student photo" />
+          </div>
+        </div>
+      </div>
+    </div>
 
     <template id="student">
       <tr>
