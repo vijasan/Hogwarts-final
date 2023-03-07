@@ -9,10 +9,10 @@
   </head>
   <body>
     <h1>Hogwarts</h1>
-    <input type="text" id="searchInput" placeholder="Search for students..." />
-    <button id="searchButton">Search</button>
+
     <p>
       Filter:
+      <button class="filter" data-action="filter" data-filter="*">All</button>
       <button class="filter" data-action="filter" data-filter="slytherin">
         Only Slytherin
       </button>
@@ -25,7 +25,9 @@
       <button class="filter" data-action="filter" data-filter="gryffindor">
         Only Gryffindor
       </button>
-      <button class="filter" data-action="filter" data-filter="*">All</button>
+
+      <input type="text" id="search" placeholder="Search for students..." />
+      <button id="searchButton">Search</button>
     </p>
 
     <hr />
@@ -64,26 +66,24 @@
     </table>
 
     <!-- popup window for student details -->
-    <div id="popup">
-      <div class="popup-container">
-        <span class="close" id="closeBtn">&times;</span>
-        <div class="popup-content">
-          <div class="student-info">
-            <h2 id="popupName"></h2>
-            <p id="popupNickname"></p>
-            <p id="popupBloodStatus"></p>
-            <p id="popupHouse"></p>
-            <p id="popupStatus"></p>
+    <section id="popup">
+      <article id="popup-article">
+        <div id="luk"></div>
+        <section class="popup-1"><img class="picture" src="" alt="" /></section>
+        <section class="popup-2">
+          <h1 class="house"></h2>
+          <h2 class="firstname"></h1>
+          <h2 class="middlename"></h2>
+          <h2 class="lastname"></h3>
+          <div class="popup-buttons">
+            
           </div>
-          <div class="student-photo">
-            <img id="popupPhoto" src="" alt="Student photo" />
-          </div>
-        </div>
-      </div>
-    </div>
+        </section>
+      </article>
+    </section>
 
     <template id="student">
-      <tr>
+      <tr class ="student-container">
         <td data-field="firstname">FIRST NAME</td>
         <td data-field="middlename">MIDDLE NAME</td>
         <td data-field="lastname">LAST NAME</td>

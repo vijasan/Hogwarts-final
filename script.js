@@ -18,7 +18,6 @@ const settings = {
   filter: "all",
   sortBy: "firstname",
   sortDir: "asc",
-  searchQuery: "",
 };
 
 function start() {
@@ -37,6 +36,8 @@ function registerButtons() {
   document
     .querySelectorAll("[data-action='sort']")
     .forEach((button) => button.addEventListener("click", selectSort));
+
+  document.querySelector("#searchButton").addEventListener("click", search);
 }
 
 async function loadJSON() {
@@ -98,7 +99,11 @@ function selectFilter(event) {
 }
 
 function setFilter(filter) {
-  settings.filterBy = filter;
+  if (filter === "search") {
+    settings.filterBy = "search";
+  } else {
+    settings.filterBy = filter;
+  }
   buildList();
 }
 
@@ -187,6 +192,18 @@ function sortByProperty(studentA, studentB) {
   }
 }
 
+function search() {
+  const searchTerm = document
+    .querySelector("#search")
+    .value.trim()
+    .toLowerCase();
+  const filteredList = allStudents.filter((student) => {
+    const fullname = `${student.firstname} ${student.lastname}`;
+    return fullname.toLowerCase().includes(searchTerm);
+  });
+  displayList(filteredList);
+}
+
 function buildList() {
   const currentList = filterList(allStudents);
   const sortedList = sortList(currentList);
@@ -199,6 +216,11 @@ function displayList(students) {
 
   // build a new list
   students.forEach(displayStudent);
+}
+function showImage(firstname, lastname) {
+  return `images/${lastname.toLowerCase()}_${firstname
+    .charAt(0)
+    .toLowerCase()}.png`;
 }
 
 function displayStudent(student) {
@@ -229,5 +251,64 @@ function displayStudent(student) {
   clone.querySelector("[data-field=house]").textContent = student.house;
 
   // append clone to list
+  clone
+    .querySelector(".student-container")
+    .addEventListener("click", () => visDetaljer(student));
+  function visDetaljer(student) {
+    popup.style.display = "flex";
+    popup.querySelector(".house").textContent = student.house;
+    popup.querySelector(".firstname").textContent = capitalize(
+      student.firstname
+    );
+    popup.querySelector(".lastname").textContent = capitalize(student.lastname);
+    popup.querySelector(".middlename").textContent = capitalize(
+      student.middlename
+    );
+    popup.querySelector(".picture").src = showImage(
+      student.firstname,
+      student.lastname
+    );
+    changePopupColor(student.house);
+  }
+
+  document
+    .querySelector("#luk")
+    .addEventListener("click", () => (popup.style.display = "none"));
   document.querySelector("#list tbody").appendChild(clone);
+}
+
+function changePopupColor(house) {
+  let popupElement = document.getElementById("popup");
+  let popupArticleElement = document.getElementById("popup-article");
+  let popup1Element = document.querySelector(".popup-1");
+  let popup2Element = document.querySelector(".popup-2");
+  let color1 = "";
+  let color2 = "";
+
+  switch (house) {
+    case "Gryffindor":
+      color1 = "#4D0506";
+      color2 = "#F3BF1B";
+      break;
+    case "Slytherin":
+      color1 = "#25581F";
+      color2 = "#9E9996";
+      break;
+    case "Ravenclaw":
+      color1 = "#0B304A";
+      color2 = "#A67A53";
+      break;
+    case "Hufflepuff":
+      color1 = "#F3DE0B";
+      color2 = "#0C0D08";
+      break;
+    default:
+      color1 = "white";
+      color2 = "white";
+  }
+
+  popupElement.style.backgroundImage = `linear-gradient(90deg, ${color1}, ${color1} 50%, ${color2} 50%, ${color2})`;
+  popupArticleElement.style.backgroundColor = color1;
+  popup1Element.style.backgroundColor = color1;
+  popup2Element.style.backgroundColor = color1;
 }
