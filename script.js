@@ -285,6 +285,13 @@ function changePopupColor(house) {
   let color1 = "";
   let color2 = "";
 
+  const colors = {
+    Gryffindor: ["#4D0506", "#F3BF1B"],
+    Slytherin: ["#25581F", "#9E9996"],
+    Ravenclaw: ["#0B304A", "#A67A53"],
+    Hufflepuff: ["#F3DE0B", "#0C0D08"],
+  };
+
   switch (house) {
     case "Gryffindor":
       color1 = "#4D0506";
@@ -311,4 +318,23 @@ function changePopupColor(house) {
   popupArticleElement.style.backgroundColor = color1;
   popup1Element.style.backgroundColor = color1;
   popup2Element.style.backgroundColor = color1;
+  const popup1 = document.querySelector(".popup-1");
+  const popup2 = document.querySelector(".popup-2");
+  const houseElement = popup.querySelector(".house");
+  const firstNameElement = popup.querySelector(".firstname");
+  const lastNameElement = popup.querySelector(".lastname");
+  const middleNameElement = popup.querySelector(".middlename");
+
+  if (house === "Hufflepuff") {
+    houseElement.style.color = "black";
+    firstNameElement.style.color = "black";
+    lastNameElement.style.color = "black";
+    middleNameElement.style.color = "black";
+  } else {
+    const [color1, color2] = colors[house];
+    houseElement.style.color = "white";
+    firstNameElement.style.color = "white";
+    lastNameElement.style.color = "white";
+    middleNameElement.style.color = "white";
+  }
 }
