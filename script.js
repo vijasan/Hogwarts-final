@@ -12,8 +12,11 @@ const Student = {
   lastname: "",
   gender: "",
   house: "",
-  Expel: false,
+  prefect: false,
+  inq_squad: false,
+  bloodStatus: "",
 };
+
 const settings = {
   filter: "all",
   sortBy: "firstname",
@@ -48,6 +51,28 @@ async function loadJSON() {
 
   // when loaded, prepare data objects
   prepareObjects(jsonData);
+  loadBloodStatus(); // load blood status after loading student data
+}
+
+async function loadBloodStatus() {
+  const response = await fetch(
+    "https://petlatkea.dk/2021/hogwarts/families.json"
+  );
+  const jsonData = await response.json();
+
+  allStudents.forEach((student) => {
+    const lastName = student.lastname.toLowerCase();
+    const family = Object.keys(jsonData).find((key) =>
+      jsonData[key].some((name) => lastName === name.toLowerCase())
+    );
+    student.bloodStatus =
+      family === "pure"
+        ? "Pure-blood"
+        : family === "half"
+        ? "Half-blood"
+        : "Muggle-born";
+  });
+  buildList();
 }
 
 function prepareObjects(jsonData) {
@@ -215,6 +240,45 @@ function displayList(students) {
   document.querySelector("#list tbody").innerHTML = "";
 
   // build a new list
+  students.forEach((student) => {
+    const clone = document
+      .querySelector("template#student")
+      .content.cloneNode(true);
+
+    // Set data on the clone
+    clone.querySelector("[data-field=firstname]").textContent =
+      student.firstname;
+    clone.querySelector("[data-field=middlename]").textContent =
+      student.middlename;
+    clone.querySelector("[data-field=lastname]").textContent = student.lastname;
+    clone.querySelector("[data-field=gender]").textContent = student.gender;
+    clone.querySelector("[data-field=house]").textContent = student.house;
+    clone.querySelector("[data-field=prefect]").textContent = student.prefect
+      ? "☆"
+      : "";
+    clone.querySelector("[data-field=inqsquad]").textContent = student.inq_squad
+      ? "☆"
+      : "";
+    clone
+      .querySelector(".student-container")
+      .classList.add(student.house.toLowerCase());
+    clone
+      .querySelector(".student-container")
+      .addEventListener("click", () => showPopup(student));
+
+    // Display blood status
+    clone.querySelector("[data-field=bloodstatus]").textContent =
+      student.bloodStatus;
+
+    document.querySelector("#list tbody").appendChild(clone);
+  });
+}
+
+function displayList(students) {
+  // clear the list
+  document.querySelector("#list tbody").innerHTML = "";
+
+  // build a new list
   students.forEach(displayStudent);
 }
 function showImage(firstname, lastname) {
@@ -250,6 +314,43 @@ function displayStudent(student) {
 
   clone.querySelector("[data-field=house]").textContent = student.house;
 
+  if (student.prefect === true) {
+    clone.querySelector("[data-field=prefect]").textContent = "🌟";
+  } else {
+    clone.querySelector("[data-field=prefect]").textContent = "☆";
+  }
+
+  clone
+    .querySelector("[data-field=prefect]")
+    .addEventListener("click", clickPrefect);
+  function clickPrefect() {
+    if (student.prefect === true) {
+      student.prefect = false;
+    } else {
+      student.prefect = true;
+    }
+
+    buildList();
+  }
+
+  if (student.inqsquad === true) {
+    clone.querySelector("[data-field=inqsquad]").textContent = "🌟";
+  } else {
+    clone.querySelector("[data-field=inqsquad]").textContent = "☆";
+  }
+
+  clone
+    .querySelector("[data-field=inqsquad]")
+    .addEventListener("click", clickSquad);
+  function clickSquad() {
+    if (student.inqsquad === true) {
+      student.inqsquad = false;
+    } else {
+      student.inqsquad = true;
+    }
+
+    buildList();
+  }
   // append clone to list
   clone
     .querySelector(".student-container")
@@ -268,6 +369,9 @@ function displayStudent(student) {
       student.firstname,
       student.lastname
     );
+    popup.querySelector(
+      ".bloodstatus"
+    ).textContent = `Blood status: ${student.bloodStatus}`;
     changePopupColor(student.house);
   }
 
@@ -324,17 +428,20 @@ function changePopupColor(house) {
   const firstNameElement = popup.querySelector(".firstname");
   const lastNameElement = popup.querySelector(".lastname");
   const middleNameElement = popup.querySelector(".middlename");
+  const bloodElement = popup.querySelector(".bloodstatus");
 
   if (house === "Hufflepuff") {
     houseElement.style.color = "black";
     firstNameElement.style.color = "black";
     lastNameElement.style.color = "black";
     middleNameElement.style.color = "black";
+    bloodElement.style.color = "black";
   } else {
     const [color1, color2] = colors[house];
     houseElement.style.color = "white";
     firstNameElement.style.color = "white";
     lastNameElement.style.color = "white";
     middleNameElement.style.color = "white";
+    bloodElement.style.color = "white";
   }
 }

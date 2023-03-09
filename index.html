@@ -34,7 +34,14 @@
 
     <table id="list">
       <thead>
+        
         <tr id="sorting">
+          <th data-action="sort" data-sort-direction="asc" data-sort="prefect">
+            Prefect
+          </th>
+          <th data-action="sort" data-sort-direction="asc" data-sort="inqsquad">
+            Inq Squad
+          </th>
           <th
             data-action="sort"
             data-sort-direction="asc"
@@ -74,7 +81,8 @@
           <h1 class="house"></h2>
           <h2 class="firstname"></h1>
           <h2 class="middlename"></h2>
-          <h2 class="lastname"></h3>
+          <h2 class="lastname"></h2>
+          <h3 class="bloodstatus"></h3>
           <div class="popup-buttons">
             
           </div>
@@ -84,6 +92,8 @@
 
     <template id="student">
       <tr class ="student-container">
+       <td data-field="prefect">☆</td>
+       <td data-field="inqsquad">☆</td>
         <td data-field="firstname">FIRST NAME</td>
         <td data-field="middlename">MIDDLE NAME</td>
         <td data-field="lastname">LAST NAME</td>
