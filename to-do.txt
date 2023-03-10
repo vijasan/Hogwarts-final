@@ -3,5 +3,6 @@ Prefects & Inq squad
 Expel 
 Hack the system 
 Add details to popup 
+Total count
 Fix images
 Write assignment 

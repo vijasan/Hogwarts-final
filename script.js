@@ -4,6 +4,11 @@ window.addEventListener("DOMContentLoaded", start);
 
 let allStudents = [];
 
+const settings = {
+  filter: "all",
+  sortBy: "firstname",
+  sortDir: "asc",
+};
 // The prototype for all students:
 const Student = {
   firstname: "",
@@ -15,22 +20,100 @@ const Student = {
   prefect: false,
   inq_squad: false,
   bloodStatus: "",
+  expelled: false,
 };
 
-const settings = {
-  filter: "all",
-  sortBy: "firstname",
-  sortDir: "asc",
-};
+const expelledStudents = [];
+
+function expelStudent(event) {
+  const firstName = event.target.dataset.student;
+  const expelledStudent = allStudents.find(
+    (student) => student.firstname === firstName
+  );
+
+  if (expelledStudent) {
+    // set the student's expelled property to true
+    expelledStudent.expelled = true;
+
+    // add the expelled student to the expelledStudents array
+    expelledStudents.push(expelledStudent);
+
+    // save the expelledStudents array to Local Storage
+    localStorage.setItem("expelledStudents", JSON.stringify(expelledStudents));
+
+    // create a row in the expelled list table for the expelled student
+    const tableBody = document.querySelector("#expelledList tbody");
+    const row = tableBody.insertRow();
+    row.innerHTML = `
+  <td>${expelledStudent.firstname}</td>
+  <td>${expelledStudent.middlename}</td>
+  <td>${expelledStudent.lastname}</td>
+  <td>${expelledStudent.gender}</td>
+  <td>${expelledStudent.house}</td>
+`;
+
+    // remove the expelled student from the allStudents array
+    allStudents = allStudents.filter(
+      (student) => student.firstname !== firstName
+    );
+
+    // update the tables
+    buildList();
+    buildExpelledList();
+  }
+}
+
+function buildExpelledList() {
+  let table = document.querySelector("#expelledList");
+  if (!table) {
+    table = document.createElement("table");
+    table.id = "expelledList";
+    const thead = document.createElement("thead");
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <th>First Name</th>
+      <th>Middle Name</th>
+      <th>Last Name</th>
+      <th>Gender</th>
+      <th>House</th>
+    `;
+    thead.appendChild(tr);
+    const tbody = document.createElement("tbody");
+    table.appendChild(thead);
+    table.appendChild(tbody);
+    document.body.appendChild(table);
+  }
+
+  const tableBody = table.querySelector("tbody");
+  tableBody.innerHTML = "";
+
+  expelledStudents.forEach((student) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${student.firstname}</td>
+      <td>${student.middlename}</td>
+      <td>${student.lastname}</td>
+      <td>${student.gender}</td>
+      <td>${student.house}</td>
+    `;
+    tableBody.appendChild(tr);
+  });
+}
 
 function start() {
-  console.log("ready");
+  // retrieve expelledStudents array from Local Storage
+  const expelledStudentsString = localStorage.getItem("expelledStudents");
+  if (expelledStudentsString) {
+    expelledStudents = JSON.parse(expelledStudentsString);
+  }
 
   // TODO: Add event-listeners to filter and sort buttons
   registerButtons();
   loadJSON();
-}
 
+  // display expelled students on page load
+  buildExpelledList();
+}
 function registerButtons() {
   document
     .querySelectorAll("[data-action='filter']")
@@ -41,6 +124,10 @@ function registerButtons() {
     .forEach((button) => button.addEventListener("click", selectSort));
 
   document.querySelector("#searchButton").addEventListener("click", search);
+
+  document
+    .querySelector("#expel-button")
+    .addEventListener("click", expelStudent);
 }
 
 async function loadJSON() {
@@ -145,6 +232,8 @@ function filterList(filteredList) {
   } else if (settings.filterBy === "ravenclaw") {
     //filter for Ravenclaw
     filteredList = allStudents.filter(isRav);
+  } else if (settings.filterBy === "expelled0") {
+    filteredList = allStudents.filter(isExpelled);
   }
   return filteredList;
 }
@@ -160,6 +249,10 @@ function isHuf(student) {
 }
 function isRav(student) {
   return student.house === "Ravenclaw";
+}
+
+function isExpelled(student) {
+  return student.firstName === "Expelled";
 }
 function selectSort(event) {
   const sortBy = event.target.dataset.sort;
