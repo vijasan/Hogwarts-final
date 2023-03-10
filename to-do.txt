@@ -6,3 +6,10 @@ Add details to popup
 Total count
 Fix images
 Write assignment 
+
+To do 11/03: 
+Expel list 
+Dialogboxes 
+Total count 
+Fix the images 
+HackTheSystem. 

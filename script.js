@@ -3,6 +3,7 @@
 window.addEventListener("DOMContentLoaded", start);
 
 let allStudents = [];
+let expelStudents = [];
 
 const settings = {
   filter: "all",
@@ -17,101 +18,31 @@ const Student = {
   lastname: "",
   gender: "",
   house: "",
+  prefect: false,
+  inq_squad: false,
   bloodStatus: "",
   expelled: false,
-  isPrefect: false, // Add the isPrefect property
 };
 
-const expelledStudents = [];
-
-function expelStudent(event) {
-  const firstName = event.target.dataset.student;
-  const expelledStudent = allStudents.find(
-    (student) => student.firstname === firstName
+function expelStudent() {
+  const popup = document.querySelector(".popup-2");
+  const studentName = popup.querySelector(".firstname").value;
+  const studentIndex = allStudents.findIndex(
+    (student) => student.name === studentName
   );
-
-  if (expelledStudent) {
-    // set the student's expelled property to true
-    expelledStudent.expelled = true;
-
-    // add the expelled student to the expelledStudents array
-    expelledStudents.push(expelledStudent);
-
-    // save the expelledStudents array to Local Storage
-    localStorage.setItem("expelledStudents", JSON.stringify(expelledStudents));
-
-    // create a row in the expelled list table for the expelled student
-    const tableBody = document.querySelector("#expelledList tbody");
-    const row = tableBody.insertRow();
-    row.innerHTML = `
-  <td>${expelledStudent.firstname}</td>
-  <td>${expelledStudent.middlename}</td>
-  <td>${expelledStudent.lastname}</td>
-  <td>${expelledStudent.gender}</td>
-  <td>${expelledStudent.house}</td>
-`;
-
-    // remove the expelled student from the allStudents array
-    allStudents = allStudents.filter(
-      (student) => student.firstname !== firstName
-    );
-
-    // update the tables
+  if (studentIndex !== -1) {
+    const student = allStudents[studentIndex];
+    student.expelled = "Expelled";
+    expelStudents.push(student);
+    allStudents.splice(studentIndex, 1);
     buildList();
-    buildExpelledList();
   }
-}
-
-function buildExpelledList() {
-  let table = document.querySelector("#expelledList");
-  if (!table) {
-    table = document.createElement("table");
-    table.id = "expelledList";
-    const thead = document.createElement("thead");
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <th>First Name</th>
-      <th>Middle Name</th>
-      <th>Last Name</th>
-      <th>Gender</th>
-      <th>House</th>
-    `;
-    thead.appendChild(tr);
-    const tbody = document.createElement("tbody");
-    table.appendChild(thead);
-    table.appendChild(tbody);
-    document.body.appendChild(table);
-  }
-
-  const tableBody = table.querySelector("tbody");
-  tableBody.innerHTML = "";
-
-  expelledStudents.forEach((student) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${student.firstname}</td>
-      <td>${student.middlename}</td>
-      <td>${student.lastname}</td>
-      <td>${student.gender}</td>
-      <td>${student.house}</td>
-    `;
-    tableBody.appendChild(tr);
-  });
 }
 
 function start() {
-  // retrieve expelledStudents array from Local Storage
-  const expelledStudentsString = localStorage.getItem("expelledStudents");
-  if (expelledStudentsString) {
-    expelledStudents = JSON.parse(expelledStudentsString);
-  }
-
   // TODO: Add event-listeners to filter and sort buttons
   registerButtons();
   loadJSON();
-
-  // display expelled students on page load
-  buildExpelledList();
 }
 function registerButtons() {
   document
@@ -127,6 +58,9 @@ function registerButtons() {
   document
     .querySelector("#expel-button")
     .addEventListener("click", expelStudent);
+  document
+    .querySelector("#hack-button")
+    .addEventListener("click", hackTheSystem);
 }
 
 async function loadJSON() {
@@ -179,7 +113,6 @@ function prepareObject(jsonObject) {
     .trim()
     .toLowerCase()
     .replace(/^\w/, (c) => c.toUpperCase()); // capitalize the first letter of each word
-  student.isPrefect = false; // Set the isPrefect property to false
 
   return student;
 }
@@ -232,7 +165,7 @@ function filterList(filteredList) {
   } else if (settings.filterBy === "ravenclaw") {
     //filter for Ravenclaw
     filteredList = allStudents.filter(isRav);
-  } else if (settings.filterBy === "expelled0") {
+  } else if (settings.filterBy === "expelled") {
     filteredList = allStudents.filter(isExpelled);
   }
   return filteredList;
@@ -322,30 +255,77 @@ function search() {
   displayList(filteredList);
 }
 
+function hackTheSystem() {
+  // Remove the "Expelled" property from all expelled students
+  allStudents.forEach((student) => {
+    if (student.expelled === "Expelled") {
+      delete student.expelled;
+      expelStudents.splice(expelStudents.indexOf(student), 1);
+      allStudents.push(student);
+    }
+  });
+
+  // Create a new student object with the properties of the prototype Student
+  const hacker = Object.create(Student);
+
+  // Add a me as student to the student list
+  hacker.firstname = "Vijasan";
+  hacker.lastname = "Vasantharajan";
+  hacker.gender = "Male";
+  hacker.house = "Slytherin";
+  hacker.bloodStatus = "Muggle-born";
+  hacker.expelled = false;
+
+  allStudents.push(hacker);
+
+  // Add the new student to the inquisitorial squad
+  hacker.inquisitorial = true;
+
+  // Randomly modify blood-status of former pure-bloods
+  const bloodStatusOptions = ["Pure-blood", "Half-blood", "Muggle-born"];
+  allStudents.forEach((student) => {
+    if (student.bloodStatus === "Pure-blood") {
+      const randomIndex = Math.floor(Math.random() * bloodStatusOptions.length);
+      student.bloodStatus = bloodStatusOptions[randomIndex];
+    }
+  });
+
+  // Update the list with the new student and modified blood-statuses
+  buildList();
+
+  // Disable the hack button
+  const hackButton = document.querySelector("#hack-button");
+  hackButton.disabled = true;
+  hackButton.style.backgroundColor = "grey";
+
+  // Remove the student from the inquisitorial squad after 10 seconds
+  setTimeout(() => {
+    hacker.inquisitorial = false;
+
+    // Find all students that are in the inquisitorial squad and remove them
+    allStudents.forEach((student) => {
+      if (student.inquisitorial) {
+        student.inquisitorial = false;
+        const squadStar = document.querySelector(
+          `[data-student="${student.id}"] [data-field=inqsquad]`
+        );
+        squadStar.textContent = "☆";
+        setTimeout(() => {
+          buildList();
+        }, 1000);
+      }
+    });
+
+    // Enable the hack button
+    hackButton.disabled = false;
+    hackButton.style.backgroundColor = "green";
+  }, 10000);
+}
+
 function buildList() {
   const currentList = filterList(allStudents);
   const sortedList = sortList(currentList);
   displayList(sortedList);
-}
-function makePrefect(student) {
-  // Check if there are already two prefects from the student's house
-  const prefectsFromHouse = allStudents.filter(
-    (s) => s.house === student.house && s.prefect
-  );
-  if (prefectsFromHouse.length < 2) {
-    student.prefect = true;
-    buildList();
-  } else {
-    // If there are already two prefects from the student's house, show an error message
-    alert(
-      `There can only be two prefects from each house. ${student.firstname} ${student.lastname} cannot be made a prefect.`
-    );
-  }
-}
-
-function revokePrefect(student) {
-  student.prefect = false;
-  buildList();
 }
 
 function displayList(students) {
@@ -353,29 +333,10 @@ function displayList(students) {
   document.querySelector("#list tbody").innerHTML = "";
 
   // build a new list
-
-  // Build the table rows
-  sortedList.forEach((student) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${student.firstname}</td>
-      <td>${student.middlename}</td>
-      <td>${student.lastname}</td>
-      <td>${student.gender}</td>
-      <td>${student.house}</td>
-      <td>
-        <button data-action="make-prefect" data-student="${student.firstname}">Make prefect</button>
-        <button data-action="revoke-prefect" data-student="${student.firstname}">Revoke prefect status</button>
-      </td>
-    `;
-
-    // Add event listeners to the new buttons
-    row
-      .querySelector("[data-action='make-prefect']")
-      .addEventListener("click", makePrefect);
-    row
-      .querySelector("[data-action='revoke-prefect']")
-      .addEventListener("click", revokePrefect);
+  students.forEach((student) => {
+    const clone = document
+      .querySelector("template#student")
+      .content.cloneNode(true);
 
     // Set data on the clone
     clone.querySelector("[data-field=firstname]").textContent =
@@ -455,14 +416,58 @@ function displayStudent(student) {
   clone
     .querySelector("[data-field=prefect]")
     .addEventListener("click", clickPrefect);
+
   function clickPrefect() {
     if (student.prefect === true) {
       student.prefect = false;
     } else {
-      student.prefect = true;
+      tryToMakeAPrefect(student);
     }
 
     buildList();
+  }
+
+  function tryToMakeAPrefect(selectedStudent) {
+    const prefects = allStudents.filter((student) => student.prefect);
+    const numberOfPrefects = prefects.length;
+
+    const numberOfPrefectsInHouse = prefects.filter(
+      (student) => student.house === selectedStudent.house
+    ).length;
+
+    if (numberOfPrefectsInHouse >= 2) {
+      console.log("There can only be 2 prefects from each house!");
+      removeOther(prefects, selectedStudent);
+    } else if (numberOfPrefects >= 8) {
+      console.log("There can only be 8 prefects!");
+      removeAorB(prefects[0], prefects[1], selectedStudent);
+    } else {
+      makePrefect(selectedStudent);
+    }
+
+    function removeOther(prefects, selectedStudent) {
+      const otherPrefectsInHouse = prefects.filter(
+        (student) =>
+          student.prefect === true && student.house === selectedStudent.house
+      );
+
+      removePrefect(otherPrefectsInHouse[0]);
+      makePrefect(selectedStudent);
+    }
+
+    function removeAorB(prefectA, prefectB, selectedStudent) {
+      removePrefect(prefectA);
+      removePrefect(prefectB);
+      makePrefect(selectedStudent);
+    }
+
+    function removePrefect(prefectStudent) {
+      prefectStudent.prefect = false;
+    }
+
+    function makePrefect(student) {
+      student.prefect = true;
+    }
   }
 
   if (student.inqsquad === true) {
@@ -474,15 +479,21 @@ function displayStudent(student) {
   clone
     .querySelector("[data-field=inqsquad]")
     .addEventListener("click", clickSquad);
+
   function clickSquad() {
     if (student.inqsquad === true) {
       student.inqsquad = false;
-    } else {
+    } else if (student.blood === "pure" || student.house === "Slytherin") {
       student.inqsquad = true;
+    } else {
+      console.log(
+        "Only pure-blood students and Slytherins can be part of the Inquisitorial Squad!"
+      );
     }
 
     buildList();
   }
+
   // append clone to list
   clone
     .querySelector(".student-container")
