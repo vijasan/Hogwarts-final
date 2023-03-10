@@ -17,10 +17,9 @@ const Student = {
   lastname: "",
   gender: "",
   house: "",
-  prefect: false,
-  inq_squad: false,
   bloodStatus: "",
   expelled: false,
+  isPrefect: false, // Add the isPrefect property
 };
 
 const expelledStudents = [];
@@ -180,6 +179,7 @@ function prepareObject(jsonObject) {
     .trim()
     .toLowerCase()
     .replace(/^\w/, (c) => c.toUpperCase()); // capitalize the first letter of each word
+  student.isPrefect = false; // Set the isPrefect property to false
 
   return student;
 }
@@ -327,16 +327,55 @@ function buildList() {
   const sortedList = sortList(currentList);
   displayList(sortedList);
 }
+function makePrefect(student) {
+  // Check if there are already two prefects from the student's house
+  const prefectsFromHouse = allStudents.filter(
+    (s) => s.house === student.house && s.prefect
+  );
+  if (prefectsFromHouse.length < 2) {
+    student.prefect = true;
+    buildList();
+  } else {
+    // If there are already two prefects from the student's house, show an error message
+    alert(
+      `There can only be two prefects from each house. ${student.firstname} ${student.lastname} cannot be made a prefect.`
+    );
+  }
+}
+
+function revokePrefect(student) {
+  student.prefect = false;
+  buildList();
+}
 
 function displayList(students) {
   // clear the list
   document.querySelector("#list tbody").innerHTML = "";
 
   // build a new list
-  students.forEach((student) => {
-    const clone = document
-      .querySelector("template#student")
-      .content.cloneNode(true);
+
+  // Build the table rows
+  sortedList.forEach((student) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${student.firstname}</td>
+      <td>${student.middlename}</td>
+      <td>${student.lastname}</td>
+      <td>${student.gender}</td>
+      <td>${student.house}</td>
+      <td>
+        <button data-action="make-prefect" data-student="${student.firstname}">Make prefect</button>
+        <button data-action="revoke-prefect" data-student="${student.firstname}">Revoke prefect status</button>
+      </td>
+    `;
+
+    // Add event listeners to the new buttons
+    row
+      .querySelector("[data-action='make-prefect']")
+      .addEventListener("click", makePrefect);
+    row
+      .querySelector("[data-action='revoke-prefect']")
+      .addEventListener("click", revokePrefect);
 
     // Set data on the clone
     clone.querySelector("[data-field=firstname]").textContent =
