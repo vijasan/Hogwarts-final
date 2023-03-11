@@ -14,3 +14,12 @@ Total count
 Fix the images 
 
 assignment (remember activity diagram and wireframe)
+
+To do list 12/03:
+Finishing touch to the inqsquad in hackTheSystem
+Dialogbox for expelling the hacker
+Fix the expel list if possible 
+Fix the images 
+Css
+Activity diagram
+Assignment

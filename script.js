@@ -521,10 +521,10 @@ function displayStudent(student) {
     ).length;
 
     if (numberOfPrefectsInHouse >= 2) {
-      console.log("There can only be 2 prefects from each house!");
+      window.alert("There can only be 2 prefects from each house!");
       removeOther(prefects, selectedStudent);
     } else if (numberOfPrefects >= 8) {
-      console.log("There can only be 8 prefects!");
+      window.alert("There can only be 8 prefects!");
       removeAorB(prefects[0], prefects[1], selectedStudent);
     } else {
       makePrefect(selectedStudent);
@@ -571,7 +571,7 @@ function displayStudent(student) {
     } else if (student.blood === "pure" || student.house === "Slytherin") {
       student.inqsquad = true;
     } else {
-      console.log(
+      window.alert(
         "Only pure-blood students and Slytherins can be part of the Inquisitorial Squad!"
       );
     }
