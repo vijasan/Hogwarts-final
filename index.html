@@ -76,10 +76,22 @@
           </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody >
         <!-- student template will be copied and inserted here -->
       </tbody>
     </table>
+    <!-- table for expelled students -->
+   <table id="expelledList">
+  <thead>
+    <tr>
+      <th>First Name</th>
+      <th>Middle Name</th>
+      <th>Last Name</th>
+      <th>House</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
 
     <!-- popup window for student details -->
     <section id="popup">
@@ -97,19 +109,6 @@
           <h3 class="inqsquad"></h3>
           <div class="popup-buttons">
 <button id="expel-button" data-action="expel" data-student="${student.firstname}">Expel</button>
-
-
-<!-- table for expelled students -->
-<table id="expelledList">
-  <thead>
-    <tr>
-   
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
-
-
 </div>
         </section>
       </article>

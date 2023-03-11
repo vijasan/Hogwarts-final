@@ -73,6 +73,31 @@ function expelStudent() {
     expelStudents.push(student);
     allStudents.splice(studentIndex, 1);
     buildList();
+    buildExpelList();
+  }
+}
+
+function buildExpelList() {
+  const expelledList = document.querySelector("#expelledList tbody");
+  expelledList.innerHTML = "";
+
+  for (const student of expelStudents) {
+    const row = document.createElement("tr");
+
+    const firstNameCell = document.createElement("td");
+    firstNameCell.textContent = student.firstname;
+
+    const middleNameCell = document.createElement("td");
+    middleNameCell.textContent = student.middlename;
+
+    const lastNameCell = document.createElement("td");
+    lastNameCell.textContent = student.lastname;
+
+    const houseCell = document.createElement("td");
+    houseCell.textContent = student.house;
+
+    row.append(firstNameCell, middleNameCell, lastNameCell, houseCell);
+    expelledList.appendChild(row);
   }
 }
 
