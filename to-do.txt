@@ -12,5 +12,5 @@ Expel list
 Dialogboxes 
 Total count 
 Fix the images 
-HackTheSystem (the inq squad part)
+
 assignment (remember activity diagram and wireframe)

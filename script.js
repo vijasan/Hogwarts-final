@@ -24,6 +24,43 @@ const Student = {
   expelled: false,
 };
 
+function countStudents() {
+  const houseCounts = {
+    Gryffindor: 0,
+    Slytherin: 0,
+    Hufflepuff: 0,
+    Ravenclaw: 0,
+  };
+  let numNotExpelled = 0;
+  let numExpelled = expelStudents.length;
+  let numDisplayed = filterList(allStudents).length;
+
+  allStudents.forEach((student) => {
+    if (!student.expelled) {
+      numNotExpelled++;
+      houseCounts[student.house]++;
+    }
+  });
+
+  const houseCountsElem = document.getElementById("house-counts");
+  houseCountsElem.innerHTML = "";
+  for (const house in houseCounts) {
+    const count = houseCounts[house];
+    const li = document.createElement("li");
+    li.textContent = `${house}: ${count}`;
+    houseCountsElem.appendChild(li);
+  }
+
+  const numNotExpelledElem = document.getElementById("num-not-expelled");
+  numNotExpelledElem.textContent = numNotExpelled;
+
+  const numExpelledElem = document.getElementById("num-expelled");
+  numExpelledElem.textContent = numExpelled;
+
+  const numDisplayedElem = document.getElementById("num-displayed");
+  numDisplayedElem.textContent = numDisplayed;
+}
+
 function expelStudent() {
   const popup = document.querySelector(".popup-2");
   const studentName = popup.querySelector(".firstname").value;
@@ -346,6 +383,9 @@ function buildList() {
   const currentList = filterList(allStudents);
   const sortedList = sortList(currentList);
   displayList(sortedList);
+
+  // update the count
+  countStudents();
 }
 
 function displayList(students) {
