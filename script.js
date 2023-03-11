@@ -254,6 +254,7 @@ function search() {
   });
   displayList(filteredList);
 }
+let inquisitorialSquad = [];
 
 function hackTheSystem() {
   // Remove the "Expelled" property from all expelled students
@@ -268,23 +269,24 @@ function hackTheSystem() {
   // Create a new student object with the properties of the prototype Student
   const hacker = Object.create(Student);
 
-  // Add a me as student to the student list
+  // Add a new student to the student list
   hacker.firstname = "Vijasan";
   hacker.lastname = "Vasantharajan";
   hacker.gender = "Male";
   hacker.house = "Slytherin";
-  hacker.bloodStatus = "Muggle-born";
+  hacker.bloodStatus = "just a chill guy :)";
   hacker.expelled = false;
 
   allStudents.push(hacker);
 
   // Add the new student to the inquisitorial squad
   hacker.inquisitorial = true;
+  inquisitorialSquad.push(hacker);
 
   // Randomly modify blood-status of former pure-bloods
   const bloodStatusOptions = ["Pure-blood", "Half-blood", "Muggle-born"];
   allStudents.forEach((student) => {
-    if (student.bloodStatus === "Pure-blood") {
+    if (student.bloodStatus === "Pure-blood" && !student.expelled) {
       const randomIndex = Math.floor(Math.random() * bloodStatusOptions.length);
       student.bloodStatus = bloodStatusOptions[randomIndex];
     }
@@ -298,22 +300,40 @@ function hackTheSystem() {
   hackButton.disabled = true;
   hackButton.style.backgroundColor = "grey";
 
-  // Remove the student from the inquisitorial squad after 10 seconds
+  // Remove any students added to the inquisitorial squad after 10 seconds
   setTimeout(() => {
-    hacker.inquisitorial = false;
-
-    // Find all students that are in the inquisitorial squad and remove them
-    allStudents.forEach((student) => {
+    let studentsRemoved = false;
+    inquisitorialSquad.forEach((student) => {
       if (student.inquisitorial) {
         student.inquisitorial = false;
         const squadStar = document.querySelector(
           `[data-student="${student.id}"] [data-field=inqsquad]`
         );
-        squadStar.textContent = "☆";
-        setTimeout(() => {
-          buildList();
-        }, 1000);
+        if (squadStar) {
+          squadStar.textContent = "☆";
+        }
+        studentsRemoved = true;
       }
+    });
+    inquisitorialSquad = inquisitorialSquad.filter(
+      (student) => !student.inquisitorial
+    );
+
+    if (studentsRemoved) {
+      buildList();
+      // Notify the user that the students were removed
+      alert("Students have been removed from the inquisitorial squad.");
+    }
+
+    // Reset inquisitorial squad status for all students
+    allStudents.forEach((student) => {
+      student.inquisitorial = false;
+    });
+
+    // Remove the golden star from all table cells
+    const squadStars = document.querySelectorAll("[data-field=inqsquad]");
+    squadStars.forEach((star) => {
+      star.textContent = "☆";
     });
 
     // Enable the hack button
