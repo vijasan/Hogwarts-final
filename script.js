@@ -576,6 +576,16 @@ function displayStudent(student) {
       ".bloodstatus"
     ).textContent = `Blood status: ${student.bloodStatus}`;
     changePopupColor(student.house);
+
+    popup.querySelector(".prefect").textContent = student.prefect
+      ? "Prefect"
+      : "Not Prefect";
+    popup.querySelector(".expelled").textContent = student.expelled
+      ? "Expelled"
+      : "Not expelled";
+    popup.querySelector(".inqsquad").textContent = student.inquisitorial
+      ? "Inq Squad"
+      : "Not Inq Squad";
   }
 
   document
@@ -632,6 +642,9 @@ function changePopupColor(house) {
   const lastNameElement = popup.querySelector(".lastname");
   const middleNameElement = popup.querySelector(".middlename");
   const bloodElement = popup.querySelector(".bloodstatus");
+  const inqElement = popup.querySelector(".inqsquad");
+  const prefectElement = popup.querySelector(".prefect");
+  const expelElement = popup.querySelector(".expelled");
 
   if (house === "Hufflepuff") {
     houseElement.style.color = "black";
@@ -639,6 +652,9 @@ function changePopupColor(house) {
     lastNameElement.style.color = "black";
     middleNameElement.style.color = "black";
     bloodElement.style.color = "black";
+    inqElement.style.color = "black";
+    prefectElement.style.color = "black";
+    expelElement.style.color = "black";
   } else {
     const [color1, color2] = colors[house];
     houseElement.style.color = "white";
@@ -646,5 +662,8 @@ function changePopupColor(house) {
     lastNameElement.style.color = "white";
     middleNameElement.style.color = "white";
     bloodElement.style.color = "white";
+    inqElement.style.color = "white";
+    prefectElement.style.color = "white";
+    expelElement.style.color = "white";
   }
 }
