@@ -4,6 +4,7 @@ window.addEventListener("DOMContentLoaded", start);
 
 let allStudents = [];
 let expelStudents = [];
+let hacked = false;
 
 const settings = {
   filter: "all",
@@ -65,16 +66,20 @@ function expelStudent() {
   const popup = document.querySelector(".popup-2");
   const studentName = popup.querySelector(".firstname").textContent;
   console.log(studentName);
-  const studentIndex = allStudents.findIndex(
-    (student) => student.firstname.toLowerCase() === studentName.toLowerCase()
-  );
-  console.log(studentIndex);
-  if (studentIndex !== -1) {
-    const student = allStudents[studentIndex];
-    student.expelled = "Expelled";
-    expelStudents.push(student);
-    allStudents.splice(studentIndex, 1);
-    buildList();
+  if (studentName === "Vijasan") {
+    alert("This student cannot be expelled");
+  } else {
+    const studentIndex = allStudents.findIndex(
+      (student) => student.firstname.toLowerCase() === studentName.toLowerCase()
+    );
+    console.log(studentIndex);
+    if (studentIndex !== -1) {
+      const student = allStudents[studentIndex];
+      student.expelled = "Expelled";
+      expelStudents.push(student);
+      allStudents.splice(studentIndex, 1);
+      buildList();
+    }
   }
 }
 
@@ -307,6 +312,7 @@ function search() {
 let inquisitorialSquad = [];
 
 function hackTheSystem() {
+  hacked = true;
   // Remove the "Expelled" property from all expelled students
   allStudents.forEach((student) => {
     if (student.expelled === "Expelled") {
@@ -351,45 +357,45 @@ function hackTheSystem() {
   hackButton.style.backgroundColor = "grey";
 
   // Remove any students added to the inquisitorial squad after 10 seconds
-  setTimeout(() => {
-    let studentsRemoved = false;
-    inquisitorialSquad.forEach((student) => {
-      if (student.inquisitorial) {
-        student.inquisitorial = false;
-        const squadStar = document.querySelector(
-          `[data-student="${student.id}"] [data-field=inqsquad]`
-        );
-        if (squadStar) {
-          squadStar.textContent = "☆";
-        }
-        studentsRemoved = true;
-      }
-    });
-    inquisitorialSquad = inquisitorialSquad.filter(
-      (student) => !student.inquisitorial
-    );
+  // setTimeout(() => {
+  //   let studentsRemoved = false;
+  //   inquisitorialSquad.forEach((student) => {
+  //     if (student.inquisitorial) {
+  //       student.inquisitorial = false;
+  //       const squadStar = document.querySelector(
+  //         `[data-student="${student.id}"] [data-field=inqsquad]`
+  //       );
+  //       if (squadStar) {
+  //         squadStar.textContent = "☆";
+  //       }
+  //       studentsRemoved = true;
+  //     }
+  //   });
+  //   inquisitorialSquad = inquisitorialSquad.filter(
+  //     (student) => !student.inquisitorial
+  //   );
 
-    if (studentsRemoved) {
-      buildList();
-      // Notify the user that the students were removed
-      alert("Students have been removed from the inquisitorial squad.");
-    }
+  //   if (studentsRemoved) {
+  //     buildList();
+  //     // Notify the user that the students were removed
+  //     alert("Students have been removed from the inquisitorial squad.");
+  //   }
 
-    // Reset inquisitorial squad status for all students
-    allStudents.forEach((student) => {
-      student.inquisitorial = false;
-    });
+  //   // Reset inquisitorial squad status for all students
+  //   allStudents.forEach((student) => {
+  //     student.inquisitorial = false;
+  //   });
 
-    // Remove the golden star from all table cells
-    const squadStars = document.querySelectorAll("[data-field=inqsquad]");
-    squadStars.forEach((star) => {
-      star.textContent = "☆";
-    });
+  //   // Remove the golden star from all table cells
+  //   const squadStars = document.querySelectorAll("[data-field=inqsquad]");
+  //   squadStars.forEach((star) => {
+  //     star.textContent = "☆";
+  //   });
 
-    // Enable the hack button
-    hackButton.disabled = false;
-    hackButton.style.backgroundColor = "green";
-  }, 10000);
+  //   // Enable the hack button
+  //   hackButton.disabled = false;
+  //   hackButton.style.backgroundColor = "green";
+  // }, 20000);
 }
 
 function buildList() {
@@ -424,7 +430,7 @@ function displayList(students) {
         ? "☆"
         : "";
       clone.querySelector("[data-field=inqsquad]").textContent =
-        student.inq_squad ? "☆" : "";
+        student.inqsquad ? "☆" : "";
     }
     clone
       .querySelector(".student-container")
@@ -449,10 +455,24 @@ function displayList(students) {
   // build a new list
   students.forEach(displayStudent);
 }
-function showImage(firstname, lastname) {
-  return `images/${lastname.toLowerCase()}_${firstname
-    .charAt(0)
-    .toLowerCase()}.png`;
+function showImage(student) {
+  let lastName = student.lastname.toLowerCase();
+  let firstName = student.firstname[0].toLowerCase();
+  const sameLastName = allStudents.filter(
+    (list) => list.lastname == student.lastname
+  );
+  const hyphen = student.lastname.indexOf("-");
+  if (sameLastName.length > 1) {
+    firstName = student.firstname.toLowerCase();
+  } else if (hyphen > -1) {
+    lastName = student.lastname
+      .substring(hyphen + 1, student.lastname.length)
+      .toLowerCase();
+  }
+
+  let filename = `${lastName}_${firstName}`;
+
+  return `images/${filename}.png`;
 }
 
 function displayStudent(student) {
@@ -565,6 +585,20 @@ function displayStudent(student) {
         "Only pure-blood students and Slytherins can be part of the Inquisitorial Squad!"
       );
     }
+    if (hacked) {
+      setTimeout(() => {
+        student.inqsquad = false;
+        const squadStar = document.querySelector(`[data-field=inqsquad]`);
+
+        squadStar.textContent = "☆";
+        const squadStars = document.querySelectorAll("[data-field=inqsquad]");
+        squadStars.forEach((star) => {
+          star.textContent = "☆";
+        });
+
+        alert("swag");
+      }, 2000);
+    }
 
     buildList();
   }
@@ -584,10 +618,7 @@ function displayStudent(student) {
     popup.querySelector(".middlename").textContent = capitalize(
       student.middlename
     );
-    popup.querySelector(".picture").src = showImage(
-      student.firstname,
-      student.lastname
-    );
+    popup.querySelector(".picture").src = showImage(student);
     popup.querySelector(
       ".bloodstatus"
     ).textContent = `Blood status: ${student.bloodStatus}`;
@@ -599,7 +630,7 @@ function displayStudent(student) {
     popup.querySelector(".expelled").textContent = student.expelled
       ? "Expelled"
       : "Not expelled";
-    popup.querySelector(".inqsquad").textContent = student.inquisitorial
+    popup.querySelector(".inqsquad").textContent = student.inqsquad
       ? "Inq Squad"
       : "Not Inq Squad";
 
