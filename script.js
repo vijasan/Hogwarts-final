@@ -283,6 +283,7 @@ function sortList(sortedList) {
   }
 
   sortedList = sortedList.sort(sortByProperty);
+
   function sortByProperty(studentA, studentB) {
     let propA = studentA[settings.sortBy].toLowerCase();
     let propB = studentB[settings.sortBy].toLowerCase();
