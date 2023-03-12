@@ -283,12 +283,16 @@ function sortList(sortedList) {
   }
 
   sortedList = sortedList.sort(sortByProperty);
-
   function sortByProperty(studentA, studentB) {
-    if (studentA[settings.sortBy] < studentB[settings.sortBy]) {
+    let propA = studentA[settings.sortBy].toLowerCase();
+    let propB = studentB[settings.sortBy].toLowerCase();
+
+    if (propA < propB) {
       return -1 * direction;
-    } else {
+    } else if (propA > propB) {
       return 1 * direction;
+    } else {
+      return 0;
     }
   }
 
