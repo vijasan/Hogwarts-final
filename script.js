@@ -81,11 +81,6 @@ function buildExpelList() {
   const expelledList = document.querySelector("#expelledList tbody");
   expelledList.innerHTML = "";
 
-  // sort the expelled students list by first name
-  expelStudents.sort((a, b) =>
-    a.firstname.localeCompare(b.firstname, "en", { sensitivity: "base" })
-  );
-
   for (const student of expelStudents) {
     const row = document.createElement("tr");
 
@@ -118,6 +113,10 @@ function registerButtons() {
 
   document
     .querySelectorAll("[data-action='sort']")
+    .forEach((button) => button.addEventListener("click", selectSort));
+
+  document
+    .querySelectorAll("[data-action='sortExpell']")
     .forEach((button) => button.addEventListener("click", selectSort));
 
   document.querySelector("#searchButton").addEventListener("click", search);
@@ -279,6 +278,7 @@ function setSort(sortBy, sortDir) {
   settings.sortBy = sortBy;
   settings.sortDir = sortDir;
   buildList();
+  buildExpelList();
 }
 
 function sortList(sortedList) {
