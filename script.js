@@ -63,41 +63,18 @@ function countStudents() {
 
 function expelStudent() {
   const popup = document.querySelector(".popup-2");
-  const studentName = popup.querySelector(".firstname").value;
+  const studentName = popup.querySelector(".firstname").textContent;
+  console.log(studentName);
   const studentIndex = allStudents.findIndex(
-    (student) => student.name === studentName
+    (student) => student.firstname.toLowerCase() === studentName.toLowerCase()
   );
+  console.log(studentIndex);
   if (studentIndex !== -1) {
     const student = allStudents[studentIndex];
     student.expelled = "Expelled";
     expelStudents.push(student);
     allStudents.splice(studentIndex, 1);
     buildList();
-    buildExpelList();
-  }
-}
-
-function buildExpelList() {
-  const expelledList = document.querySelector("#expelledList tbody");
-  expelledList.innerHTML = "";
-
-  for (const student of expelStudents) {
-    const row = document.createElement("tr");
-
-    const firstNameCell = document.createElement("td");
-    firstNameCell.textContent = capitalize(student.firstname);
-
-    const middleNameCell = document.createElement("td");
-    middleNameCell.textContent = capitalize(student.middlename);
-
-    const lastNameCell = document.createElement("td");
-    lastNameCell.textContent = capitalize(student.lastname);
-
-    const houseCell = document.createElement("td");
-    houseCell.textContent = capitalize(student.house);
-
-    row.append(firstNameCell, middleNameCell, lastNameCell, houseCell);
-    expelledList.appendChild(row);
   }
 }
 
@@ -232,7 +209,7 @@ function filterList(filteredList) {
     //filter for Ravenclaw
     filteredList = allStudents.filter(isRav);
   } else if (settings.filterBy === "expelled") {
-    filteredList = allStudents.filter(isExpelled);
+    filteredList = expelStudents;
   }
   return filteredList;
 }
@@ -289,6 +266,7 @@ function sortList(sortedList) {
 
   sortedList = sortedList.sort(sortByProperty);
 
+  // Sorts alphabetically
   function sortByProperty(studentA, studentB) {
     let propA = studentA[settings.sortBy].toLowerCase();
     let propB = studentB[settings.sortBy].toLowerCase();
@@ -441,12 +419,13 @@ function displayList(students) {
     clone.querySelector("[data-field=lastname]").textContent = student.lastname;
     clone.querySelector("[data-field=gender]").textContent = student.gender;
     clone.querySelector("[data-field=house]").textContent = student.house;
-    clone.querySelector("[data-field=prefect]").textContent = student.prefect
-      ? "☆"
-      : "";
-    clone.querySelector("[data-field=inqsquad]").textContent = student.inq_squad
-      ? "☆"
-      : "";
+    if (!student.expelled) {
+      clone.querySelector("[data-field=prefect]").textContent = student.prefect
+        ? "☆"
+        : "";
+      clone.querySelector("[data-field=inqsquad]").textContent =
+        student.inq_squad ? "☆" : "";
+    }
     clone
       .querySelector(".student-container")
       .classList.add(student.house.toLowerCase());
@@ -462,6 +441,7 @@ function displayList(students) {
   });
 }
 
+// important for the total count
 function displayList(students) {
   // clear the list
   document.querySelector("#list tbody").innerHTML = "";
@@ -504,7 +484,7 @@ function displayStudent(student) {
 
   if (student.prefect === true) {
     clone.querySelector("[data-field=prefect]").textContent = "🌟";
-  } else {
+  } else if (!student.expelled) {
     clone.querySelector("[data-field=prefect]").textContent = "☆";
   }
 
@@ -567,7 +547,7 @@ function displayStudent(student) {
 
   if (student.inqsquad === true) {
     clone.querySelector("[data-field=inqsquad]").textContent = "🌟";
-  } else {
+  } else if (!student.expelled) {
     clone.querySelector("[data-field=inqsquad]").textContent = "☆";
   }
 
@@ -593,6 +573,7 @@ function displayStudent(student) {
   clone
     .querySelector(".student-container")
     .addEventListener("click", () => visDetaljer(student));
+  //Pop-up
   function visDetaljer(student) {
     popup.style.display = "flex";
     popup.querySelector(".house").textContent = student.house;
@@ -621,6 +602,10 @@ function displayStudent(student) {
     popup.querySelector(".inqsquad").textContent = student.inquisitorial
       ? "Inq Squad"
       : "Not Inq Squad";
+
+    if (student.expelled) {
+      popup.querySelector("#expel-button").disabled;
+    }
   }
 
   document
