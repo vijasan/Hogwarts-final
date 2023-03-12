@@ -22,7 +22,6 @@ const Student = {
   prefect: false,
   inq_squad: false,
   bloodStatus: "",
-  expelled: false,
 };
 
 function countStudents() {
