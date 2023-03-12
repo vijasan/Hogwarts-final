@@ -355,47 +355,6 @@ function hackTheSystem() {
   const hackButton = document.querySelector("#hack-button");
   hackButton.disabled = true;
   hackButton.style.backgroundColor = "grey";
-
-  // Remove any students added to the inquisitorial squad after 10 seconds
-  // setTimeout(() => {
-  //   let studentsRemoved = false;
-  //   inquisitorialSquad.forEach((student) => {
-  //     if (student.inquisitorial) {
-  //       student.inquisitorial = false;
-  //       const squadStar = document.querySelector(
-  //         `[data-student="${student.id}"] [data-field=inqsquad]`
-  //       );
-  //       if (squadStar) {
-  //         squadStar.textContent = "☆";
-  //       }
-  //       studentsRemoved = true;
-  //     }
-  //   });
-  //   inquisitorialSquad = inquisitorialSquad.filter(
-  //     (student) => !student.inquisitorial
-  //   );
-
-  //   if (studentsRemoved) {
-  //     buildList();
-  //     // Notify the user that the students were removed
-  //     alert("Students have been removed from the inquisitorial squad.");
-  //   }
-
-  //   // Reset inquisitorial squad status for all students
-  //   allStudents.forEach((student) => {
-  //     student.inquisitorial = false;
-  //   });
-
-  //   // Remove the golden star from all table cells
-  //   const squadStars = document.querySelectorAll("[data-field=inqsquad]");
-  //   squadStars.forEach((star) => {
-  //     star.textContent = "☆";
-  //   });
-
-  //   // Enable the hack button
-  //   hackButton.disabled = false;
-  //   hackButton.style.backgroundColor = "green";
-  // }, 20000);
 }
 
 function buildList() {
@@ -596,7 +555,7 @@ function displayStudent(student) {
           star.textContent = "☆";
         });
 
-        alert("swag");
+        alert("Student have been removed from the inquisitorial squad.");
       }, 2000);
     }
 
