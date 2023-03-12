@@ -81,20 +81,25 @@ function buildExpelList() {
   const expelledList = document.querySelector("#expelledList tbody");
   expelledList.innerHTML = "";
 
+  // sort the expelled students list by first name
+  expelStudents.sort((a, b) =>
+    a.firstname.localeCompare(b.firstname, "en", { sensitivity: "base" })
+  );
+
   for (const student of expelStudents) {
     const row = document.createElement("tr");
 
     const firstNameCell = document.createElement("td");
-    firstNameCell.textContent = student.firstname;
+    firstNameCell.textContent = capitalize(student.firstname);
 
     const middleNameCell = document.createElement("td");
-    middleNameCell.textContent = student.middlename;
+    middleNameCell.textContent = capitalize(student.middlename);
 
     const lastNameCell = document.createElement("td");
-    lastNameCell.textContent = student.lastname;
+    lastNameCell.textContent = capitalize(student.lastname);
 
     const houseCell = document.createElement("td");
-    houseCell.textContent = student.house;
+    houseCell.textContent = capitalize(student.house);
 
     row.append(firstNameCell, middleNameCell, lastNameCell, houseCell);
     expelledList.appendChild(row);
